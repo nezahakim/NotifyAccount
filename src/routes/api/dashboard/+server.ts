@@ -18,7 +18,7 @@ const userProfileUpdateSchema = z.object({
 });
 
 const disconnectAppSchema = z.object({
-  app_id: z.string().uuid(),
+  app_id: z.uuid(),
 });
 
 // Helper function to get user ID from session/auth
