@@ -108,8 +108,8 @@
         
         // Handle profile data
         if (profile) {
-          user = profile.user;
-          userProfile = profile.profile;
+          user = profile?.user;
+          userProfile = profile?.profile;
         }
         
         // Handle apps and sessions
@@ -133,8 +133,8 @@
     try {
       const response = await apiRequest('/api/dashboard?type=profile');
       if (response.success && response.data) {
-        user = response.data.user;
-        userProfile = response.data.profile;
+        user = response.data?.user;
+        userProfile = response.data?.profile;
       }
     } catch (err: any) {
       console.error('Error loading profile:', err);
