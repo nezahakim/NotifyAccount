@@ -121,9 +121,6 @@
           console.warn('Dashboard warnings:', response.warnings);
         }
       }
-
-      const data = await response.json()
-      console.log(data);
       
     } catch (err: any) {
       console.error('Error loading dashboard data:', err);
