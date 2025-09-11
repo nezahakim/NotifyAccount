@@ -7,6 +7,7 @@ interface User {
     id: string;
     email: string;
     role: string;
+    sessionId: string;
 }
 
 interface AuthState {
@@ -92,10 +93,10 @@ function createAuthStore() {
 
 export async function refreshTokenOnLoad() {
     try {
+
         const response = await fetch(`${AUTH_SERVER}/api/auth/refresh`, {
             method: 'POST',
-            credentials: 'include',
-            
+            credentials: 'include',            
         });
         
         if (response.ok) {
@@ -105,9 +106,13 @@ export async function refreshTokenOnLoad() {
             authStore.login({
                 id: payload.sub,
                 email: payload.email,
-                role: payload.role
+                role: payload.role,
+                sessionId: payload.sessionId
             }, accessToken);
         }
+        const data = await response.json();
+        console.log(data)
+
     } catch (err) {
         console.error('Token refresh failed:', err);
     }
