@@ -1,5 +1,5 @@
 // src/lib/stores/auth.ts
-import { writable, derived } from 'svelte/store';
+import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import { AUTH_SERVER } from '$lib/utils';
 
@@ -96,7 +96,7 @@ export async function refreshTokenOnLoad() {
 
         const response = await fetch(`${AUTH_SERVER}/api/auth/refresh`, {
             method: 'POST',
-            credentials: 'include',            
+            credentials: 'include',
         });
         
         if (response.ok) {
