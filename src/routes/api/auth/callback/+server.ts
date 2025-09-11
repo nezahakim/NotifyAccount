@@ -1,8 +1,7 @@
-// src/routes/callback/+server.ts
 import { json, redirect, type RequestHandler } from '@sveltejs/kit';
 import { AUTH_SERVER } from '$lib/utils';
 
-export const  GET: RequestHandler = async ({ url, cookies }) => {
+export const  GET: RequestHandler = async ({ url }) => {
 	try {
 		const token = url.searchParams.get('token');
 
