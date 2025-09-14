@@ -5,15 +5,34 @@
 	let { children, data} = $props();
 
 	import { onMount } from 'svelte';
-    import { authStore } from '$lib/stores/auth';
     import { browser } from '$app/environment';
-	import { refreshTokenOnLoad } from '$lib/stores/auth';
-    
-    onMount(() => {
+
+
+    onMount(async () => {
         if (browser) {
-            // refreshTokenOnLoad();
+            await checkToken();
         }
     });
+
+
+
+ async function checkToken(){
+    const response = await fetch('/api/check-token', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: "include",
+    });
+
+    const data = response.json();
+    if(!response.ok){
+        console.log(data)
+    }else{
+        console.log(data)
+    }
+
+}
     
     
 </script>
