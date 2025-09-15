@@ -446,7 +446,7 @@ async function getUserProfile(userId: string) {
     const { data, error: dbError } = await supabase
       .from('user_profile_complete')
       .select('*')
-      .eq('id', userId)
+      .eq('user_id', userId)
       .single();
 
     if (dbError && dbError.code !== 'PGRST116') {
@@ -619,20 +619,27 @@ async function disconnectApp(userId: string, requestData: any) {
 async function getRecentSessions(userId: string) {
   try {
     const { data, error: dbError } = await supabase
-      .from('user_app_sessions')
+      .from('auth_sessions') // ✅ correct table name
       .select(`
-        *,
-        sso_applications(app_name, app_key, app_icon_url)
+        id,
+        created_at,
+        expires_at,
+        ip_address,
+        user_agent,
+        is_active
       `)
       .eq('user_id', userId)
-      .order('last_accessed_at', { ascending: false })
+      .order('created_at', { ascending: false })
       .limit(10);
 
     if (dbError) {
       throw new Error(`Database error: ${dbError.message}`);
     }
 
-    return { data: data || [], success: true };
+    return json({ 
+      data: data || [], 
+      success: true 
+    });
   } catch (err: any) {
     throw new Error(`Failed to fetch recent sessions: ${err.message}`);
   }
