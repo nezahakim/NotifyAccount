@@ -97,6 +97,9 @@ export async function refreshTokenOnLoad() {
         const response = await fetch(`${AUTH_SERVER}/api/auth/refresh`, {
             method: 'POST',
             credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
         
         if (response.ok) {
