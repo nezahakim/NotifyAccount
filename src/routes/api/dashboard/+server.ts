@@ -636,10 +636,10 @@ async function getRecentSessions(userId: string) {
       throw new Error(`Database error: ${dbError.message}`);
     }
 
-    return json({ 
+    return { 
       data: data || [], 
       success: true 
-    });
+    };
   } catch (err: any) {
     throw new Error(`Failed to fetch recent sessions: ${err.message}`);
   }
