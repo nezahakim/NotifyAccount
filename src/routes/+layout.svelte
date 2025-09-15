@@ -4,37 +4,6 @@
 
 	let { children, data} = $props();
 
-	import { onMount } from 'svelte';
-    import { browser } from '$app/environment';
-
-
-    onMount(async () => {
-        if (browser) {
-            await checkToken();
-            
-        }
-    });
-
-
-
- async function checkToken(){
-    const response = await fetch('/api/auth/check-token', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: "include",
-    });
-
-    const data = await response.json();
-    if(!response.ok){
-        console.log(data)
-    }else{
-        console.log(data)
-    }
-
-}
-    
     
 </script>
 

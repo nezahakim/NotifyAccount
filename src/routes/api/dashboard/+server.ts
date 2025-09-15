@@ -386,7 +386,6 @@ async function getUserId(request: Request): Promise<string> {
     throw error(401, 'Unauthorized - Invalid token');
   }
 
-
   return user.user.id;
 }
 
@@ -396,9 +395,9 @@ function createErrorResponse(message: string, status: number = 400) {
 }
 
 // GET - Fetch dashboard data
-export const GET: RequestHandler = async ({ request, url }) => {
+export const GET: RequestHandler = async ({ request, url, locals }) => {
   try {
-    const userId = await getUserId(request);
+    const userId = locals.user?.id as string;
     const dataType = url.searchParams.get('type');
 
     switch (dataType) {
