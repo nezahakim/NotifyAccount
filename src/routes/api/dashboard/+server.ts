@@ -380,7 +380,6 @@ async function getUserId(request: Request): Promise<string> {
 
   const token = authHeader.replace('Bearer ', '');  
   const user = await authClient.validateToken(token);
-  console.log(user)
 
   if (!user?.user?.id) {
     throw error(401, 'Unauthorized - Invalid token');
@@ -395,9 +394,9 @@ function createErrorResponse(message: string, status: number = 400) {
 }
 
 // GET - Fetch dashboard data
-export const GET: RequestHandler = async ({ request, url, locals }) => {
+export const GET: RequestHandler = async ({ request, url }) => {
   try {
-    const userId = locals.user?.id as string;
+    const userId = await getUserId(request);
     const dataType = url.searchParams.get('type');
 
     switch (dataType) {
