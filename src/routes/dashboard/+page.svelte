@@ -79,7 +79,7 @@
       },
       ...options,
     });
-    
+
     const data = await response.json();
     
     if (!response.ok) {
@@ -92,7 +92,7 @@
   // Data loading functions
   onMount(() => {
     if (browser) {
-      // refreshTokenOnLoad();
+      refreshTokenOnLoad();
       loadAllData();
     }
   });

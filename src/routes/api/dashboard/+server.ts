@@ -378,12 +378,14 @@ async function getUserId(request: Request): Promise<string> {
     throw error(401, 'Unauthorized - No auth header');
   }
 
-  const token = authHeader.replace('Bearer ', '');
+  const token = authHeader.replace('Bearer ', '');  
   const user = await authClient.validateToken(token);
+  console.log(user)
 
   if (!user?.user?.id) {
     throw error(401, 'Unauthorized - Invalid token');
   }
+
 
   return user.user.id;
 }
