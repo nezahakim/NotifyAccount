@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
-  import {authStore} from '$lib/stores/auth'
+  import {authStore, refreshTokenOnLoad} from '$lib/stores/auth'
   
   // Types
   interface User {
@@ -92,7 +92,8 @@
   // Data loading functions
   onMount(() => {
     if (browser) {
-      loadAllData();
+      refreshTokenOnLoad();
+      // loadAllData();
     }
   });
   
@@ -243,6 +244,8 @@
   $: lastActivity = recentSessions.length > 0 
     ? getRelativeTime(recentSessions[0].last_accessed_at) 
     : 'No activity';
+
+
 </script>
 
 <svelte:head>

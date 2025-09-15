@@ -11,13 +11,14 @@
     onMount(async () => {
         if (browser) {
             await checkToken();
+            
         }
     });
 
 
 
  async function checkToken(){
-    const response = await fetch('/api/check-token', {
+    const response = await fetch('/api/auth/check-token', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
