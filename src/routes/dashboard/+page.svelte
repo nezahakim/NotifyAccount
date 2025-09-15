@@ -92,8 +92,8 @@
   // Data loading functions
   onMount(() => {
     if (browser) {
-      refreshTokenOnLoad();
-      // loadAllData();
+      // refreshTokenOnLoad();
+      loadAllData();
     }
   });
   
