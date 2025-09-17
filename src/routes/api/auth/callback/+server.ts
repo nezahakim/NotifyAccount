@@ -25,6 +25,7 @@ export const  GET: RequestHandler = async ({ url, cookies }) => {
 			user: data?.user,
 			token
 		});
+		
 	} catch (error: any) {
 		return json({ error: `Authentication failed | ${error}` }, { status: 500 });
 	}

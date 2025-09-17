@@ -4,13 +4,6 @@ import { SUPABASE_SERVICE_KEY, SUPABASE_URL } from '$env/static/private';
 export const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
 
-// Helper function to get current user
-export async function getCurrentUser() {
-  const { data: { user }, error } = await supabase.auth.getUser()
-  if (error) throw error
-  return user
-}
-
 // Helper function to automatically grant app access when user accepts
 export async function grantAppAccess(userEmail: any, appKey: any) {
   try {

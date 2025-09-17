@@ -1,8 +1,6 @@
 // client-app/src/lib/auth.ts
 import { authStore } from '$lib/stores/auth';
 import { AUTH_SERVER } from '$lib/utils';
-import { get } from 'svelte/store';
-import { supabase } from './supabase';
 
 export class AuthClient {
     async login() {
