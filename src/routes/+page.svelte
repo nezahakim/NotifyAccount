@@ -5,7 +5,7 @@
 
 
     async function check_token(){
-		try{
+		try {
 			
 			if($authStore.isAuthenticated){
 				goto('/dashboard');
