@@ -16,7 +16,7 @@
 				method: "GET",
 			});
 
-			if(result.status === 401){
+			if(!result.ok){
 				window.location.href = 'https://auth.notifycode.org/login';
 			}
 
