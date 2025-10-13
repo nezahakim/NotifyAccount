@@ -1,39 +1,66 @@
-<script>
-	import { page } from '$app/state';
-    import { authStore, isAuthenticated } from '$lib/stores/auth';
-	import { AUTH_SERVER } from '$lib/utils';
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+	import { authStore } from '$lib/stores/auth';
 
 
+    async function check_token(){
+		try{
+			
+			if($authStore.isAuthenticated){
+				goto('/dashboard');
+				return;
+			}
 
+			const result = await fetch('/api/auth/check-token',{
+				method: "GET",
+			});
+
+			if(result.status === 401){
+				window.location.href = 'https://auth.notifycode.org/login';
+			}
+
+			const data = await result.json();
+
+			if(data.success){
+				authStore.login(data.user, data.access_token);
+			}
+
+		} catch(err:any) {
+			console.log(err)
+		}
+	}
+  
+    onMount(() => {
+        check_token();
+
+      const timeout = setTimeout(() => {
+        goto('/login');
+      }, 1800); // Wait 1.8 seconds before redirecting
+  
+      return () => clearTimeout(timeout);
+    });
 </script>
-
-<div class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-    <div class="text-center text-white">
-        <h1 class="text-5xl font-bold mb-4">Auth Server</h1>
-        <p class="text-xl mb-8">Secure centralized authentication for your applications</p>
+  
+<main class="flex flex-col justify-between items-center w-full h-screen bg-white text-gray-900">
+    <!-- Intro Section -->
+    <section class="flex flex-col items-center justify-end h-[60vh]">
         
-        {#if $isAuthenticated}
-            <a 
-                href="/dashboard" 
-                class="inline-block px-8 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-gray-100 transition"
-            >
-                Go to Dashboard
-            </a>
-        {:else}
-            <div class="space-x-4">
-                <a 
-                    href={`${AUTH_SERVER}/login?redirect=${page.url}callback`} 
-                    class="inline-block px-8 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-gray-100 transition"
-                >
-                    Sign In
-                </a>
-                <a 
-                    href={`${AUTH_SERVER}/register?redirect=${page.url}callback`}     
-                    class="inline-block px-8 py-3 bg-indigo-700 text-white rounded-lg font-semibold hover:bg-indigo-800 transition"
-                >
-                    Create Account
-                </a>
-            </div>
-        {/if}
-    </div>
-</div>
+      <div class="mb-4">
+        <div class="w-24 h-24 rounded-full bg-blue-600 text-white flex items-center justify-center ring-4 ring-white ring-offset-2 ring-offset-gray-100 overflow-hidden">
+          <img src="/logo-mini.jpg" alt="NotifyTune+ Logo" class="object-cover w-full h-full rounded-full" />
+        </div>
+      </div>
+  
+      <!-- Title -->
+      <h1 class="text-3xl font-bold text-gray-800 drop-shadow-sm">NotifyAUTH+</h1>
+      <p class="text-sm text-gray-500 mt-2">Native secure auth made personal</p>
+    </section>
+  
+    <!-- Footer Section -->
+    <footer class="text-center mb-6">
+      <p class="text-xs text-gray-400">Backed by</p>
+      <h2 class="text-md font-semibold text-gray-700">Notifycode Inc.</h2>
+    </footer>
+  </main>
+  

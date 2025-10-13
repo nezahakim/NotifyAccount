@@ -1,11 +1,53 @@
+import { AUTH_SERVER } from '$lib/utils';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ cookies }) => {
-    const refreshToken = cookies.get('auth_token');
+try{
+
+    const refreshToken = cookies.get('nc_rt');
 
     if (!refreshToken) {
         return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
     }
 
-    return json({ success: true, message: "Available" }, { status: 200 });
+    const result = await fetch(`${AUTH_SERVER}/api/auth/refresh`, {
+        headers: {
+            Authorization: `Bearer ${refreshToken}`
+        }
+    });
+
+    if (!result.ok) {
+        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+    }
+
+    const { accessToken } = await result.json();
+
+    const validate_result = await fetch(`${AUTH_SERVER}/api/auth/validate`, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`
+        }
+    });
+
+    if (!validate_result.ok) {
+        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+    }
+
+    const { valid, user } = await validate_result.json();
+
+    if (!valid) {
+        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+    }
+
+    return json({ success: true, 
+        message: "Available", 
+        user: user, 
+        access_token: accessToken 
+    }, { status: 200 });
+
+
+} catch (err: any ){
+    console.error(err);
+    return json({ success: false, message: `Internal Server Error | ${err.message}` }, { status: 500 });
+}
+
 };

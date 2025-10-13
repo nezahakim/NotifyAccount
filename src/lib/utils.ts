@@ -1,1 +1,1 @@
-export const AUTH_SERVER = 'https://notifyauth.vercel.app';
+export const AUTH_SERVER = 'https://auth.notifycode.org';

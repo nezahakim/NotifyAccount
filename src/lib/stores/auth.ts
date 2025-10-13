@@ -1,4 +1,3 @@
-// src/lib/stores/auth.ts
 import { writable, derived, get } from 'svelte/store';
 import { browser } from '$app/environment';
 import { AUTH_SERVER } from '$lib/utils';
