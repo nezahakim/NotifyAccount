@@ -13,7 +13,8 @@
 			}
 
 			const result = await fetch('/api/auth/check-token',{
-				method: "GET",
+				method: "POST",
+                credentials: 'include',
 			});
 
 			if(!result.ok){
