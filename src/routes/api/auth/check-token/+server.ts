@@ -7,6 +7,7 @@ try{
     const refreshToken = cookies.get('nc_rt');
 
     if (!refreshToken) {
+        console.log('No RT')
         return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
     }
 
@@ -17,6 +18,7 @@ try{
     });
 
     if (!result.ok) {
+        console.log('No RETN DT')
         return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
     }
 

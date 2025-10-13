@@ -35,7 +35,7 @@
         check_token();
 
       const timeout = setTimeout(() => {
-        goto('/login');
+        goto('/dashboard');
       }, 1800); // Wait 1.8 seconds before redirecting
   
       return () => clearTimeout(timeout);
