@@ -53,7 +53,7 @@
       </div>
   
       <!-- Title -->
-      <h1 class="text-3xl font-bold text-gray-800 drop-shadow-sm">NotifyAUTH+</h1>
+      <h1 class="text-3xl font-bold text-gray-800 drop-shadow-sm">NotifyAccount</h1>
       <p class="text-sm text-gray-500 mt-2">Native secure auth made personal</p>
     </section>
   
