@@ -1,7 +1,7 @@
 import { AUTH_SERVER } from '$lib/utils';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ cookies }) => {
+export const POST: RequestHandler = async ({ cookies, locals }) => {
 try{
 
     const refreshToken = cookies.get('nc_rt');
@@ -39,6 +39,9 @@ try{
     if (!valid) {
         return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
     }
+
+    locals.user = user;
+    locals.accessToken = accessToken;
 
     return json({ success: true, 
         message: "Available", 
