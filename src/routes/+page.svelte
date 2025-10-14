@@ -14,7 +14,7 @@
 
 			const result = await fetch('/api/auth/check-token',{
 				method: "POST",
-                credentials: 'include',
+            credentials: 'include',
 			});
 
 			if(!result.ok){
