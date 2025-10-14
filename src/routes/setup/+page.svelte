@@ -39,12 +39,12 @@
   
     onMount(async () => {
       // Check if user is authenticated
-      const response = await fetch('/api/auth/session');
-      if (!response.ok) {
+      if (!$authStore || !$authStore?.user) {
         goto('/login?redirect=/setup');
         return;
       }
-      user = await response.json();
+      
+      user = $authStore.user;
     });
   
     function addAddress() {
