@@ -1,39 +1,15 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
-	import { authStore } from '$lib/stores/auth';
+	  import { authStore } from '$lib/stores/auth.js';
 
-
-    async function check_token(){
-		try {
-			
-			if($authStore.isAuthenticated){
-				goto('/dashboard');
-				return;
-			}
-
-			const result = await fetch('/api/auth/check-token',{
-				method: "POST",
-        credentials: 'include',
-			});
-
-			if(!result.ok){
-				window.location.href = 'https://auth.notifycode.org/login';
-			}
-
-			const data = await result.json();
-
-			if(data.success){
-				authStore.login(data.user, data.access_token);
-			}
-
-		} catch(err:any) {
-			console.log(err)
-		}
-	}
-  
+    let { data } = $props();
+   
     onMount(() => {
-        check_token();
+
+    if (data?.user && data?.access_token) {
+			authStore.login(data.user, data.access_token);
+		}
 
       const timeout = setTimeout(() => {
         goto('/dashboard');

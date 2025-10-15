@@ -1,4 +1,6 @@
+import { HASH_IT_KEY } from '$env/static/private';
 import { AUTH_SERVER } from '$lib/utils';
+import { decodeHashedToken } from '@notifycode/hash-it';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ cookies, locals }) => {
@@ -10,10 +12,15 @@ try{
         return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
     }
 
+    const decodedRefToken = decodeHashedToken({
+        token: refreshToken,
+        key: HASH_IT_KEY
+    })
+
     const result = await fetch(`${AUTH_SERVER}/api/auth/refresh`, {
         method:"POST",
         headers: {
-            Authorization: `Bearer ${refreshToken}`
+            Authorization: `Bearer ${decodedRefToken}`
         }
     });
 
