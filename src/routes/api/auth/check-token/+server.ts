@@ -5,11 +5,10 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ cookies, locals }) => {
 try{
-
     const refreshToken = cookies.get('nc_rt');
 
     if (!refreshToken) {
-        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+        return json({ success: false, message: 'Unauthorized - attempt detected ERROR_RT' }, { status: 401 });
     }
 
     const decodedRefToken = decodeHashedToken({
@@ -26,7 +25,7 @@ try{
 
     if (!result.ok) {
         console.log('No RETN DT')
-        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+        return json({ success: false, message: 'Unauthorized - attempt detected ACC_ERROR_AT' }, { status: 401 });
     }
 
     const { accessToken } = await result.json();
@@ -38,13 +37,13 @@ try{
     });
 
     if (!validate_result.ok) {
-        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+        return json({ success: false, message: 'Unauthorized - attempt detected ACC_ERROR_VLT' }, { status: 401 });
     }
 
     const { valid, user } = await validate_result.json();
 
     if (!valid) {
-        return json({ success: false, message: 'Unauthorized - attempt detected' }, { status: 401 });
+        return json({ success: false, message: 'Unauthorized - attempt detected ACC_ERROR_VLT-1' }, { status: 401 });
     }
 
     locals.user = user;
@@ -59,7 +58,7 @@ try{
 
 } catch (err: any ){
     console.error(err);
-    return json({ success: false, message: `Internal Server Error | ${err.message}` }, { status: 500 });
+    return json({ success: false, message: `Internal Server Error AUTH| ${err.message}` }, { status: 500 });
 }
 
 };
