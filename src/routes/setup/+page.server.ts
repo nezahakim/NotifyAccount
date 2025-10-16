@@ -1,10 +1,20 @@
 import { authStore } from '$lib/stores/auth';
+import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ fetch, locals }) => {
+export const load: PageServerLoad = async ({ fetch, locals, cookies }) => {
+
+    const refreshToken = cookies.get('nc_rt');
+
+    if(!refreshToken){
+        redirect(401, 'https://auth.notifycode.org/login')
+    }
+
     const result = await fetch('/api/auth/check-token', {
         method: 'POST',
-        credentials: 'include'
+        headers:{
+            Authorization: 'Bearer '+refreshToken
+        }
     });
 
     const { success, message, user, access_token} = await result.json();

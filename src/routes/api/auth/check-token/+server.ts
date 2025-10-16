@@ -3,9 +3,15 @@ import { AUTH_SERVER } from '$lib/utils';
 import { decodeHashedToken } from '@notifycode/hash-it';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
-export const POST: RequestHandler = async ({ cookies, locals }) => {
+export const POST: RequestHandler = async ({ cookies, locals, request }) => {
 try{
-    const refreshToken = cookies.get('nc_rt');
+    const nc_rt = cookies.get('nc_rt');
+
+    const authHeader = request.headers.get('Authorization');
+    const token = authHeader?.replace('Bearer ', '');
+
+    const refreshToken = nc_rt || token;
+    
 
     if (!refreshToken) {
         return json({ success: false, message: 'Unauthorized - attempt detected ACC_ERROR_RT' }, { status: 401 });
