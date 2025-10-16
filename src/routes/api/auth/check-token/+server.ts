@@ -58,7 +58,7 @@ try{
 
 } catch (err: any ){
     console.error(err);
-    return json({ success: false, message: `Internal Server Error AUTH| ${err.message}` }, { status: 500 });
+    return json({ success: false, message: `Internal Server Error ACC| ${err.message}` }, { status: 500 });
 }
 
 };
