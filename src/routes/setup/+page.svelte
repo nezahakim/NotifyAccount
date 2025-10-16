@@ -1,7 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
-	import { authStore } from '$lib/stores/auth';
+	  import { authStore } from '$lib/stores/auth';
+
+    let { data } = $props()
     
     let currentStep = $state(1);
     const totalSteps = 3;
