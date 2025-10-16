@@ -1,7 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
-	  import { authStore } from '$lib/stores/auth';
 
     let { data } = $props()
     
@@ -102,9 +101,10 @@
   
       try {
         const profileData = {
-            username:profile_data.username,
-            fullName:profile_data.fullName,
-            phone:profile_data.phone,
+          user: user,
+          username:profile_data.username,
+          fullName:profile_data.fullName,
+          phone:profile_data.phone,
           dateOfBirth: profile_data.dateOfBirth || null,
           bio: about_data.bio,
           company: about_data.company,
