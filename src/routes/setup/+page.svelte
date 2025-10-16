@@ -41,12 +41,12 @@
   
     onMount(async () => {
       // Check if user is authenticated
-      if (!$authStore || !$authStore?.user) {
+      if (!data || !data?.user) {
         goto('/login?redirect=/setup');
         return;
       }
       
-      user = $authStore.user;
+      user = data.user;
     });
   
     function addAddress() {
