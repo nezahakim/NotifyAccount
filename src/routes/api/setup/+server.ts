@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
   try {
     // Get the user's session from cookies or headers
     const refreshToken = cookies.get('nc_rt');
-    const access_token = cookies.get('nc_at')
+    const access_token = locals.accessToken
 
     
     if (!refreshToken) {
@@ -17,8 +17,8 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
 
     const user = locals.user;
    
-    if (!access_token) {
-      console.log('Unauthorized ACC_ERROR_UA')
+    if (!user && !access_token) {
+      console.log('Unauthorized ACC_ERROR_UA', user, access_token)
       return json({ error: 'Unauthorized ACC_ERROR_UA' }, { status: 401 });
     }
 
