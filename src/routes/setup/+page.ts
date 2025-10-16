@@ -1,13 +1,10 @@
 import { authStore } from '$lib/stores/auth';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ fetch }) => {
-	const result = await fetch('/api/auth/check-token', {
-		method: 'POST',
-		credentials: 'include'
-	});
+export const load: PageLoad = async ({ data  }) => {
+	
 
-	const { success, message, user, access_token} = await result.json();
+	const { success, message, user, access_token} = data;
 
 	if (!success) {
 		console.log(message);
