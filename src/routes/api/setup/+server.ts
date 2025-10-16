@@ -9,14 +9,16 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
     const refreshToken = cookies.get('nc_rt');
     
     if (!refreshToken) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      console.log('Unauthorized ACC_ERROR_RT')
+      return json({ error: 'Unauthorized ACC_ERROR_RT' }, { status: 401 });
     }
 
     const user = locals.user;
     const access_token = locals.accessToken
    
     if (!user && !access_token) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
+      console.log('Unauthorized ACC_ERROR_UA')
+      return json({ error: 'Unauthorized ACC_ERROR_UA' }, { status: 401 });
     }
 
     const body = await request.json();
