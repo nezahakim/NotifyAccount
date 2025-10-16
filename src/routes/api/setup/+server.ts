@@ -35,12 +35,14 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
       return json({ error: 'Username and full name are required' }, { status: 400 });
     }
 
+    console.log(user)
+
     // Check if username is already taken
     const { data: existingProfile, error: checkError } = await supabase
       .from('user_profiles')
       .select('id')
       .eq('username', username)
-      .neq('user_id', user?.id)
+      .neq('user_id', user.id)
       .single();
 
     if (existingProfile) {
@@ -52,7 +54,7 @@ export const POST: RequestHandler = async ({ request, cookies, locals }) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .upsert({
-        user_id: user?.id,
+        user_id: user.id,
         username: username.toLowerCase().trim(),
         full_name: fullName.trim(),
         phone: phone || null,
