@@ -14,7 +14,7 @@
 
       const timeout = setTimeout(() => {
         goto('/dashboard');
-      }, 1800); // Wait 1.8 seconds before redirecting
+      }, 1800);
   
       return () => clearTimeout(timeout);
     });
@@ -33,7 +33,7 @@
       <!-- Title -->
       <h1 class="text-3xl font-bold text-gray-800 drop-shadow-sm">NotifyAccount</h1>
       <p class="text-sm text-gray-500 mt-2">Native secure auth made personal</p>
-      <p class="text-xm text-green-500 mt-2">Welcome back {#if user_email}
+      <p class="text-xm text-green-700 mt-2">Welcome back {#if user_email}
         {user_email}
       {/if}</p>
     </section>
