@@ -8,7 +8,7 @@ try{
     const refreshToken = cookies.get('nc_rt');
 
     if (!refreshToken) {
-        return json({ success: false, message: 'Unauthorized - attempt detected ERROR_RT' }, { status: 401 });
+        return json({ success: false, message: 'Unauthorized - attempt detected ACC_ERROR_RT' }, { status: 401 });
     }
 
     const decodedRefToken = decodeHashedToken({
@@ -29,10 +29,14 @@ try{
     }
 
     const { accessToken } = await result.json();
+    const decodedAccToken = decodeHashedToken({
+        token: accessToken,
+        key: HASH_IT_KEY
+    })
 
     const validate_result = await fetch(`${AUTH_SERVER}/api/auth/validate`, {
         headers: {
-            Authorization: `Bearer ${accessToken}`
+            Authorization: `Bearer ${decodedAccToken}`
         }
     });
 
