@@ -1,22 +1,20 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { supabase } from '$lib/server/supabase';
 
-
-export const POST: RequestHandler = async ({ request, cookies }) => {
+export const PUT: RequestHandler = async ({ request, cookies }) => {
   try {
-    // Get the user's session from cookies or headers
+    // Get the user's session from cookies
     const refreshToken = cookies.get('nc_rt');
-    const access_token = cookies.get('nc_at')
-
+    const access_token = cookies.get('nc_at');
     
     if (!refreshToken && !access_token) {
-      console.log('Unauthorized ACC_ERROR_RTAT')
-      return json({ error: 'Unauthorized ACC_ERROR_RT' }, { status: 401 });
+      return json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
+    
     const {
-      user,
+        user,
       username,
       fullName,
       phone,
@@ -29,29 +27,29 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       addresses
     } = body;
 
+
+    const userId = user.id;
+
     // Validate required fields
     if (!username || !fullName) {
       return json({ error: 'Username and full name are required' }, { status: 400 });
     }
 
-    // Check if username is already taken
+    // Check if username is already taken by another user
     const { data: existingProfile, error: checkError } = await supabase
       .from('user_profiles')
-      .select('id')
-      .eq('username', username)
-      .neq('user_id', user.id)
+      .select('id, user_id')
+      .eq('username', username.toLowerCase().trim())
       .single();
 
-    if (existingProfile) {
+    if (existingProfile && existingProfile.user_id !== userId) {
       return json({ error: 'Username is already taken' }, { status: 400 });
     }
 
-    // Start a transaction-like operation
-    // First, upsert the user profile
+    // Update user profile
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
-      .upsert({
-        user_id: user.id,
+      .update({
         username: username.toLowerCase().trim(),
         full_name: fullName.trim(),
         phone: phone || null,
@@ -62,30 +60,33 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         website_url: websiteUrl || null,
         timezone: timezone || 'UTC',
         updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
       })
+      .eq('user_id', userId)
       .select()
       .single();
 
     if (profileError) {
-      console.error('Profile error:', profileError);
-      return json({ error: 'Failed to save profile' }, { status: 500 });
+      console.error('Profile update error:', profileError);
+      return json({ error: 'Failed to update profile' }, { status: 500 });
     }
 
     // Handle addresses
-    if (addresses && addresses.length > 0) {
+    if (addresses && Array.isArray(addresses)) {
       // Delete existing addresses
-      await supabase
+      const { error: deleteError } = await supabase
         .from('addresses')
         .delete()
-        .eq('user_id', user?.id);
+        .eq('user_id', userId);
+
+      if (deleteError) {
+        console.error('Address delete error:', deleteError);
+      }
 
       // Insert new addresses
       const validAddresses = addresses
         .filter((addr: any) => addr.street || addr.city || addr.state)
         .map((addr: any) => ({
-          user_id: user.id,
+          user_id: userId,
           label: addr.label || 'Address',
           street: addr.street || null,
           city: addr.city || null,
@@ -102,23 +103,10 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
           .insert(validAddresses);
 
         if (addressError) {
-          console.error('Address error:', addressError);
+          console.error('Address insert error:', addressError);
           // Don't fail the entire request if addresses fail
         }
       }
-    }
-
-    // Update auth_users metadata to mark profile as complete
-    const { error: metadataError } = await supabase
-      .from('auth_users')
-      .update({
-        metadata: { profile_completed: true },
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', user.id);
-
-    if (metadataError) {
-      console.error('Metadata error:', metadataError);
     }
 
     return json({
@@ -127,52 +115,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
         id: profile.id,
         username: profile.username,
         fullName: profile.full_name
-      },
-      refreshToken: refreshToken,
+      }
     }, { status: 200 });
 
   } catch (error) {
-    console.error('Setup error:', error);
-    return json({ error: 'Internal server error' }, { status: 500 });
-  }
-};
-
-export const GET: RequestHandler = async ({ cookies, locals }) => {
-  try {
-    const refreshToken = cookies.get('nc_rt');
-    const access_token = cookies.get('nc_at')
-    
-    if (!refreshToken) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-   const user = locals.user;
-
-    if (!access_token) {
-      return json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get existing profile if any
-    const { data: profile } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('user_id', user?.id)
-      .single();
-
-    // Get existing addresses
-    const { data: addresses } = await supabase
-      .from('addresses')
-      .select('*')
-      .eq('user_id', user?.id)
-      .order('created_at', { ascending: true });
-
-    return json({
-      profile,
-      addresses: addresses || []
-    }, { status: 200 });
-
-  } catch (error) {
-    console.error('Get setup error:', error);
+    console.error('Update profile error:', error);
     return json({ error: 'Internal server error' }, { status: 500 });
   }
 };
