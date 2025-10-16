@@ -2,16 +2,7 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
 
-    let user_email = $state()
-
-    let { data } = $props();
-   
     onMount(() => {
-
-      if(data){
-        user_email =  data.user.email
-      }
-
       const timeout = setTimeout(() => {
         goto('/dashboard');
       }, 1800);
@@ -33,9 +24,6 @@
       <!-- Title -->
       <h1 class="text-3xl font-bold text-gray-800 drop-shadow-sm">NotifyAccount</h1>
       <p class="text-sm text-gray-500 mt-2">Native secure auth made personal</p>
-      <p class="text-xm text-green-700 mt-2">Welcome back {#if user_email}
-        {user_email}
-      {/if}</p>
     </section>
   
     <!-- Footer Section -->
