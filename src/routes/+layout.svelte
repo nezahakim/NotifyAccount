@@ -2,19 +2,17 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { authStore } from '$lib/stores/auth';
-	import { onMount } from 'svelte';
 
 	let { children } = $props();
 
 	let user_email = $state<string>('')
 	let is_email_set = $state<boolean>(false)
 
-	onMount(()=>{
+	$effect(()=>{
 		if($authStore.user && $authStore.user.email){
 			is_email_set = true;
 			user_email = $authStore.user.email;
 		}
-		
 	})	
 
 </script>
